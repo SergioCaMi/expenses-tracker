@@ -65,7 +65,7 @@ fs.readFile(filePath, "utf-8", (err, data) => {
         amount: arguments.at(3),
       };
       expenses.push(newObject);
-      fs.writeFile(filePath, JSON.stringify(expenses), "utf8", (err) => {
+      fs.writeFile(filePath, JSON.stringify(expenses, null, 2), "utf8", (err) => {
         if (err) {
           console.log("Error al añadir nuevo objeto");
         } else {
@@ -96,6 +96,29 @@ fs.readFile(filePath, "utf-8", (err, data) => {
       } else {
         console.log("Elemento no encontrado.");
       }
+    }
+    // Ordenar
+    if (arguments.at(0) == "--sort") {
+      const mode = arguments.at(1);
+      if (mode == "ASC") {
+        expenses.sort((a, b) => a.id - b.id);
+        console.log(`Ordenando ${mode}...`);
+      } else if (mode == "DESC") {
+        expenses.sort((a, b) => b.id - a.id);
+        console.log(`Ordenando ${mode}...`);
+      }
+      if (mode === "ASC" || mode === "DESC") {
+        fs.writeFile(filePath, JSON.stringify(expenses, null, 2), "utf8", (err) => {
+          if (err) {
+            console.log(`Error al ordenar. Modo: ${mode}. ${err}`);
+          } else {
+            console.log(`Datos ordenados ${mode} satisfactoriamente.`);
+          }
+        });
+      }
+      expenses.forEach((spent) => {
+        console.log(spent);
+      });
     }
   }
 });
